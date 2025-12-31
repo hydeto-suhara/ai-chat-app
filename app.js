@@ -154,7 +154,7 @@ async function generateAIResponse(userMessage) {
 
 // Gemini API呼び出し
 async function callGeminiAPI(message) {
-    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${APP_STATE.apiKey}";
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${APP_STATE.apiKey}`;
 
     // 会話履歴を含めたコンテキスト作成
     const conversationContext = APP_STATE.conversationHistory
@@ -359,3 +359,4 @@ function formatDateFull(date) {
 
 // アプリ起動
 document.addEventListener('DOMContentLoaded', init);
+
