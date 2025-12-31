@@ -13,6 +13,7 @@ const elements = {
     sendBtn: document.getElementById('sendBtn'),
     voiceBtn: document.getElementById('voiceBtn'),
     clearBtn: document.getElementById('clearBtn'),
+    saveObsidianBtn: document.getElementById('saveObsidianBtn'),
     themeToggle: document.getElementById('themeToggle'),
     settingsModal: document.getElementById('settingsModal'),
     apiKeyInput: document.getElementById('apiKeyInput'),
@@ -41,6 +42,7 @@ function init() {
     elements.messageInput.addEventListener('keydown', handleKeyDown);
     elements.voiceBtn.addEventListener('click', handleVoiceInput);
     elements.clearBtn.addEventListener('click', handleClearConversation);
+    elements.saveObsidianBtn.addEventListener('click', saveToObsidian);
     elements.themeToggle.addEventListener('click', toggleTheme);
     elements.saveApiKey.addEventListener('click', saveApiKey);
 
@@ -99,7 +101,7 @@ async function handleSendMessage() {
 // メッセージ追加
 function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${sender}`;
+    messageDiv.className = "message ${sender}";
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
@@ -125,13 +127,7 @@ async function generateAIResponse(userMessage) {
     // タイピングインジケーター表示
     const typingDiv = document.createElement('div');
     typingDiv.className = 'message ai typing-message';
-    typingDiv.innerHTML = `
-        <div class="message-content">
-            <div class="typing-indicator">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-    `;
+    typingDiv.innerHTML = "\n        <div class=\"message-content\">\n            <div class=\"typing-indicator\">\n                <span></span><span></span><span></span>\n            </div>\n        </div>\n    ";
     elements.chatContainer.appendChild(typingDiv);
     elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
 
@@ -158,16 +154,16 @@ async function generateAIResponse(userMessage) {
 
 // Gemini API呼び出し
 async function callGeminiAPI(message) {
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${APP_STATE.apiKey}`;
+    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${APP_STATE.apiKey}";
 
     // 会話履歴を含めたコンテキスト作成
     const conversationContext = APP_STATE.conversationHistory
         .slice(-10) // 直近10件のみ
-        .map(msg => `${msg.role === 'user' ? 'ユーザー' : 'AI'}: ${msg.content}`)
+        .map(msg => "${msg.role === 'user' ? 'ユーザー' : 'AI'}: ${msg.content}")
         .join('\n\n');
 
     const fullPrompt = conversationContext
-        ? `${conversationContext}\n\nユーザー: ${message}`
+        ? "${conversationContext}\n\nユーザー: ${message}"
         : message;
 
     const requestBody = {
@@ -246,13 +242,7 @@ function handleClearConversation() {
     if (confirm('会話履歴を全て削除しますか?')) {
         APP_STATE.conversationHistory = [];
         localStorage.removeItem('conversation_history');
-        elements.chatContainer.innerHTML = `
-            <div class="welcome-message">
-                <div class="welcome-icon">🚀</div>
-                <h2>須原さん専用AIアシスタント</h2>
-                <p>何でも聞いてください。GHL、セミナー準備、コーディング、なんでもサポートします。</p>
-            </div>
-        `;
+        elements.chatContainer.innerHTML = "\n            <div class=\"welcome-message\">\n                <div class=\"welcome-icon\">🚀</div>\n                <h2>須原さん専用AIアシスタント</h2>\n                <p>何でも聞いてください。GHL、セミナー準備、コーディング、なんでもサポートします。</p>\n            </div>\n        ";
         updateStatus('会話をクリアしました');
     }
 }
@@ -306,7 +296,7 @@ function loadConversationHistory() {
     // 履歴を表示
     APP_STATE.conversationHistory.forEach(msg => {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${msg.role}`;
+        messageDiv.className = "message ${msg.role}";
 
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
@@ -317,6 +307,54 @@ function loadConversationHistory() {
     });
 
     elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+}
+
+// Obsidian保存機能
+function saveToObsidian() {
+    if (APP_STATE.conversationHistory.length === 0) {
+        alert('保存する会話がありません');
+        return;
+    }
+
+    const markdown = generateMarkdown();
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+
+    const now = new Date();
+    const filename = "AI会話_${formatDate(now)}.md";
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
+    updateStatus('Obsidianに保存しました');
+}
+
+function generateMarkdown() {
+    const now = new Date();
+    const dateStr = formatDateFull(now);
+
+    let markdown = "# AI会話 - ${dateStr}\n\n";
+
+    APP_STATE.conversationHistory.forEach(msg => {
+        const role = msg.role === 'user' ? 'ユーザー' : 'AI';
+        markdown += "## ${role}\n\n${msg.content}\n\n";
+
+    });
+
+    markdown += "---\n作成日時: ${dateStr}\n";
+
+    return markdown;
+}
+
+function formatDate(date) {
+    return "${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}_${String(date.getHours()).padStart(2, '0')}-${String(date.getMinutes()).padStart(2, '0')}-${String(date.getSeconds()).padStart(2, '0')}";
+}
+
+function formatDateFull(date) {
+    return "${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}";
 }
 
 // アプリ起動
