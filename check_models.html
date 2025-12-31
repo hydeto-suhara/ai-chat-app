@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gemini API モデル確認</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #e4e4e7;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #3f3f46;
+            background: #252538;
+            color: #e4e4e7;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4f46e5;
+        }
+
+        pre {
+            background: #252538;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Gemini API モデル確認ツール</h1>
+    <p>APIキーを入力して、利用可能なモデルを確認します。</p>
+
+    <input type="password" id="apiKey" placeholder="Gemini APIキーを入力...">
+    <button onclick="checkModels()">モデルを確認</button>
+
+    <div id="result"></div>
+
+    <script>
+        async function checkModels() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if (!apiKey) {
+                alert('APIキーを入力してください');
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>確認中...</p>';
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'エラーが発生しました');
+                }
+
+                // generateContent をサポートするモデルのみフィルタ
+                const chatModels = data.models.filter(model =>
+                    model.supportedGenerationMethods?.includes('generateContent')
+                );
+
+                let html = '<h2>利用可能なチャットモデル:</h2><ul>';
+                chatModels.forEach(model => {
+                    html += `<li><strong>${model.name}</strong></li>`;
+                });
+                html += '</ul>';
+
+                html += '<h3>完全なレスポンス:</h3>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+
+                resultDiv.innerHTML = html;
+
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: #ef4444;">エラー: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

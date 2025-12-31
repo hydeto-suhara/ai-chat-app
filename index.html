@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="須原専用AIチャットアシスタント">
+    <title>AI Chat - Suhara Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA用メタタグ -->
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- ヘッダー -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1>🤖 AI Assistant</h1>
+                <div class="header-controls">
+                    <button id="clearBtn" class="icon-btn" title="会話をクリア">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                        </svg>
+                    </button>
+                    <button id="themeToggle" class="icon-btn" title="テーマ切替">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- チャットエリア -->
+        <main class="chat-container" id="chatContainer">
+            <div class="welcome-message">
+                <div class="welcome-icon">🚀</div>
+                <h2>須原さん専用AIアシスタント</h2>
+                <p>何でも聞いてください。GHL、セミナー準備、コーディング、なんでもサポートします。</p>
+            </div>
+        </main>
+
+        <!-- 入力エリア -->
+        <footer class="input-area">
+            <div class="input-container">
+                <button id="voiceBtn" class="voice-btn" title="音声入力">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                </button>
+                <textarea 
+                    id="messageInput" 
+                    placeholder="メッセージを入力..." 
+                    rows="1"
+                    maxlength="5000"
+                ></textarea>
+                <button id="sendBtn" class="send-btn" title="送信">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-footer">
+                <span class="status-text" id="statusText">準備完了</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 設定モーダル（APIキー入力用） -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>🔑 初期設定</h2>
+            <p>Gemini APIキーを設定してください。</p>
+            <input 
+                type="password" 
+                id="apiKeyInput" 
+                placeholder="Gemini APIキーを入力..."
+                class="api-key-input"
+            >
+            <div class="modal-actions">
+                <button id="saveApiKey" class="primary-btn">保存して開始</button>
+            </div>
+            <p class="help-text">
+                APIキーは <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> で取得できます。
+            </p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
