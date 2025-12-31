@@ -21,12 +21,19 @@
                 <div class="header-controls">
                     <button id="clearBtn" class="icon-btn" title="会話をクリア">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                        </svg>
+                    </button>
+                    <button id="saveObsidianBtn" class="icon-btn" title="Obsidianに保存">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
                         </svg>
                     </button>
                     <button id="themeToggle" class="icon-btn" title="テーマ切替">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
                         </svg>
                     </button>
                 </div>
@@ -35,6 +42,7 @@
 
         <!-- チャットエリア -->
         <main class="chat-container" id="chatContainer">
+            <!-- メッセージはJSで動的に追加されます -->
             <div class="welcome-message">
                 <div class="welcome-icon">🚀</div>
                 <h2>須原さん専用AIアシスタント</h2>
@@ -47,22 +55,17 @@
             <div class="input-container">
                 <button id="voiceBtn" class="voice-btn" title="音声入力">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                        <line x1="12" y1="19" x2="12" y2="23"/>
-                        <line x1="8" y1="23" x2="16" y2="23"/>
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
                     </svg>
                 </button>
-                <textarea 
-                    id="messageInput" 
-                    placeholder="メッセージを入力..." 
-                    rows="1"
-                    maxlength="5000"
-                ></textarea>
+                <textarea id="messageInput" placeholder="メッセージを入力..." rows="1" maxlength="5000"></textarea>
                 <button id="sendBtn" class="send-btn" title="送信">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="22" y1="2" x2="11" y2="13"/>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
                 </button>
             </div>
@@ -77,12 +80,7 @@
         <div class="modal-content">
             <h2>🔑 初期設定</h2>
             <p>Gemini APIキーを設定してください。</p>
-            <input 
-                type="password" 
-                id="apiKeyInput" 
-                placeholder="Gemini APIキーを入力..."
-                class="api-key-input"
-            >
+            <input type="password" id="apiKeyInput" placeholder="Gemini APIキーを入力..." class="api-key-input">
             <div class="modal-actions">
                 <button id="saveApiKey" class="primary-btn">保存して開始</button>
             </div>
